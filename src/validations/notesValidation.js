@@ -49,7 +49,7 @@ export const createNoteSchema = {
       'string.base': 'Content must be a string',
     }),
     tag: Joi.string()
-      .valid(TAGS)
+      .valid(...TAGS)
       .optional()
       .messages({
         'any.only': `Tag must be one of: ${TAGS}`,
@@ -74,7 +74,7 @@ export const updateNoteSchema = {
       'string.base': 'Content must be a string',
     }),
     tag: Joi.string()
-      .valid(TAGS)
+      .valid(...TAGS)
       .optional()
       .messages({
         'any.only': `Tag must be one of: ${TAGS}`,

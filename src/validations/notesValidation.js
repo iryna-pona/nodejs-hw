@@ -14,7 +14,7 @@ export const getAllNotesSchema = {
       'number.max': 'PerPage must be at most {#limit}',
     }),
     tag: Joi.string()
-      .valid(TAGS)
+      .valid(...TAGS)
       .optional()
       .messages({
         'any.only': `Tag must be one of: ${TAGS}`,

@@ -1,9 +1,26 @@
-import { Note } from "../models/note.js";
+import { Note } from '../models/note.js';
 import createHttpError from 'http-errors';
 
 export const getAllNotes = async (req, res) => {
-  const notes = await Note.find();
-  res.status(200).json(notes);
+  const page = parseInt(req.query.page, 10) || 1;
+  const perPage = parseInt(req.query.perPage, 10) || 10;
+  const skip = (page - 1) * perPage;
+  const notesQuery = Note.find();
+
+  const [totalItems, notes] = await Promise.all([
+    notesQuery.clone().countDocuments(),
+    notesQuery.skip(skip).limit(perPage),
+  ]);
+
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalItems,
+    totalPages,
+    notes,
+  });
 };
 
 export const getNoteById = async (req, res, next) => {
@@ -28,7 +45,7 @@ export const deleteNote = async (req, res, next) => {
   });
 
   if (!note) {
-    next(createHttpError(404, "Note not found"));
+    next(createHttpError(404, 'Note not found'));
     return;
   }
 
@@ -38,11 +55,9 @@ export const deleteNote = async (req, res, next) => {
 export const updateNote = async (req, res, next) => {
   const { noteId } = req.params;
 
-  const note = await Note.findOneAndUpdate(
-    { _id: noteId },
-    req.body,
-    { new: true },
-  );
+  const note = await Note.findOneAndUpdate({ _id: noteId }, req.body, {
+    new: true,
+  });
 
   if (!note) {
     next(createHttpError(404, 'Note not found'));

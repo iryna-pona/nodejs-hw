@@ -14,12 +14,12 @@ export const getAllNotesSchema = {
       'number.max': 'PerPage must be at most {#limit}',
     }),
     tag: Joi.string()
-      .valid(TAGS)
+      .valid(...TAGS)
       .optional()
       .messages({
         'any.only': `Tag must be one of: ${TAGS}`,
       }),
-    search: Joi.string().allow('').messages({
+    search: Joi.string().trim().allow('').messages({
       'string.base': 'Search must be a string',
     }),
   }),
